@@ -1,21 +1,19 @@
 package main
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
-func init() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Unable to load .env")
-	}
-}
-
 func main() {
+	LoadEnv()
+
 	router := gin.Default()
+
+	DB := ConnectDB()
+
+	fmt.Print(DB.DB.Stats().WaitDuration.String())
 
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
