@@ -20,7 +20,6 @@ func ConnectDB() Database {
 	PORT := os.Getenv("DB_PORT")
 	DBNAME := os.Getenv("DB_NAME")
 	connectionStr := fmt.Sprintf("%s:%s@tcp(%s:%v)/%s", USER, PASS, HOST, PORT, DBNAME)
-	fmt.Println(connectionStr)
 	db, err := sql.Open("mysql", connectionStr)
 
 	if err != nil {

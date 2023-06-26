@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -10,10 +11,11 @@ func main() {
 	LoadEnv()
 
 	router := gin.Default()
+	instance := ConnectDB()
 
-	DB := ConnectDB()
+	router.Use(useDatabase(instance.DB))
 
-	fmt.Print(DB.DB.Stats().WaitDuration.String())
+	fmt.Print(instance.DB.Stats().WaitDuration.String())
 
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
@@ -22,4 +24,15 @@ func main() {
 	})
 
 	router.Run()
+}
+
+func useDatabase(instance *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Set example variable
+		c.Set("db", instance)
+
+		// before request
+
+		c.Next()
+	}
 }
