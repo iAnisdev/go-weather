@@ -1,8 +1,7 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
+	routes "go-weather/Controllers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,11 +10,7 @@ func main() {
 	LoadEnv()
 
 	router := gin.Default()
-	instance := ConnectDB()
-
-	router.Use(useDatabase(instance.DB))
-
-	fmt.Print(instance.DB.Stats().WaitDuration.String())
+	ConnectDB()
 
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
@@ -23,16 +18,9 @@ func main() {
 		})
 	})
 
+	router.POST("/signup", routes.Signup)
+	router.POST("/login", routes.Login)
+	router.POST("/profile", routes.Profile)
+
 	router.Run()
-}
-
-func useDatabase(instance *sql.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// Set example variable
-		c.Set("db", instance)
-
-		// before request
-
-		c.Next()
-	}
 }
